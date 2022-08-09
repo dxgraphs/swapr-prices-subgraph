@@ -19,7 +19,7 @@ import {
 import { Factory as FactoryContract } from '../types/templates/Pair/Factory'
 import { getFactoryAddress, getStakingRewardsFactoryAddress } from '../commons/addresses'
 import { getBundle } from './factory'
-import { updateDailyUniqueInteractions } from './uniqueInteractions'
+import { updateDailyUniqueInteractions, updateMonthlyUniqueInteractions } from './uniqueInteractions'
 import { updateWeeklyUniqueInteractions } from './uniqueInteractions'
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
@@ -409,5 +409,21 @@ export function addWeeklyUniqueAddressInteraction(event: ethereum.Event, address
     ])
 
     weeklyUniqueAddressInteractionsData.save()
+  }
+}
+
+export function addMonthlyUniqueAddressInteraction(event: ethereum.Event, address: Bytes | null): void {
+  const monthlyUniqueAddressInteractionsData = updateMonthlyUniqueInteractions(event)
+
+  if (!address) {
+    return
+  }
+
+  if (!monthlyUniqueAddressInteractionsData.addresses.includes(address)) {
+    monthlyUniqueAddressInteractionsData.addresses = monthlyUniqueAddressInteractionsData.addresses.concat([
+      address as Bytes
+    ])
+
+    monthlyUniqueAddressInteractionsData.save()
   }
 }

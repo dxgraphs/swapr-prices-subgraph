@@ -1,6 +1,6 @@
 import { ethereum, BigInt } from '@graphprotocol/graph-ts'
 
-import { WeeklyUniqueAddressInteraction, DailyUniqueAddressInteraction } from '../types/schema'
+import { WeeklyUniqueAddressInteraction, DailyUniqueAddressInteraction, MonthlyUniqueAddressInteraction } from '../types/schema'
 import { getWeekFromDate, getDateFromWeek, formatDate } from './helpers'
 
 export function updateDailyUniqueInteractions(event: ethereum.Event): DailyUniqueAddressInteraction {
@@ -47,4 +47,23 @@ export function updateWeeklyUniqueInteractions(event: ethereum.Event): WeeklyUni
   weeklyUniqueAddressInteractionsData.save()
 
   return weeklyUniqueAddressInteractionsData as WeeklyUniqueAddressInteraction
+}
+
+export function updateMonthlyUniqueInteractions(event: ethereum.Event): MonthlyUniqueAddressInteraction {
+  const timestamp = event.block.timestamp.times(BigInt.fromString('1000')).toI64()
+  const today = new Date(timestamp)
+
+  const monthIdString = formatDate(today).substring(0, 7)
+
+  let monthlyUniqueAddressInteractionsData = MonthlyUniqueAddressInteraction.load(monthIdString)
+
+  if (monthlyUniqueAddressInteractionsData === null) {
+    monthlyUniqueAddressInteractionsData = new MonthlyUniqueAddressInteraction(monthIdString)
+
+    monthlyUniqueAddressInteractionsData.addresses = []
+  }
+
+  monthlyUniqueAddressInteractionsData.save()
+
+  return monthlyUniqueAddressInteractionsData as MonthlyUniqueAddressInteraction
 }

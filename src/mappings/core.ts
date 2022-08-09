@@ -18,10 +18,10 @@ import {
   BI_18,
   createLiquiditySnapshot,
   addDailyUniqueAddressInteraction,
-  addWeeklyUniqueAddressInteraction
+  addWeeklyUniqueAddressInteraction,
+  addMonthlyUniqueAddressInteraction
 } from './helpers'
 import { getBundle, getSwaprFactory } from './factory'
-import { updateWeeklyUniqueInteractions } from './uniqueInteractions'
 
 function isCompleteMint(mintId: string): boolean {
   let mintEvent = MintEvent.load(mintId)
@@ -362,6 +362,9 @@ export function handleMint(event: Mint): void {
 
   // update unique weekly mints
   addWeeklyUniqueAddressInteraction(event, mint.to)
+
+  // update unique monthly mints
+  addMonthlyUniqueAddressInteraction(event, mint.to)
 }
 
 export function handleBurn(event: Burn): void {
@@ -434,6 +437,9 @@ export function handleBurn(event: Burn): void {
 
   // update unique weekly burns
   addWeeklyUniqueAddressInteraction(event, burn.to)
+
+  // update unique monthly burns
+  addMonthlyUniqueAddressInteraction(event, burn.to)
 }
 
 export function handleSwap(event: Swap): void {
@@ -598,4 +604,7 @@ export function handleSwap(event: Swap): void {
 
   // update unique weekly swaps
   addWeeklyUniqueAddressInteraction(event, swap.from)
+
+  // update unique monthly swaps
+  addMonthlyUniqueAddressInteraction(event, swap.to)
 }

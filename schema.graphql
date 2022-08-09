@@ -259,6 +259,13 @@ type WeeklyUniqueAddressInteraction @entity {
   addresses: [Bytes!]!
 }
 
+# Monthly unique users interactions
+type MonthlyUniqueAddressInteraction @entity {
+  id: ID! # timestamp formatted as YYYY-MM date string
+
+  addresses: [Bytes!]!
+}
+
 # Data accumulated and condensed into day stats for all of Swapr
 type SwaprDayData @entity {
   id: ID! # timestamp rounded to current day by dividing by 86400
