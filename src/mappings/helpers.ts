@@ -19,7 +19,8 @@ import {
 import { Factory as FactoryContract } from '../types/templates/Pair/Factory'
 import { getFactoryAddress, getStakingRewardsFactoryAddress } from '../commons/addresses'
 import { getBundle } from './factory'
-import { updateDailyUniqueInteractions } from './dayUpdates'
+import { updateDailyUniqueInteractions } from './uniqueInteractions'
+import { updateWeeklyUniqueInteractions } from './uniqueInteractions'
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
 
@@ -331,6 +332,54 @@ export function getSwaprStakingRewardsFactory(): SwaprStakingRewardsFactory {
   return factory as SwaprStakingRewardsFactory
 }
 
+/**
+ * Get the week number from a date object
+ *
+ * @param date
+ */
+export function getWeekFromDate(date: Date): i32 {
+  const startDate = Date.UTC(date.getUTCFullYear(), 0, 1)
+  const days = Math.floor(((date.getTime() - startDate) / 86400000) as f32)
+  const weekNumber = Math.ceil((days / 7) as f32)
+
+  return weekNumber as i32
+}
+
+/**
+ * Get a date object from a week in a specific year
+ *
+ * @param year
+ * @param week
+ */
+export function getDateFromWeek(year: i32, week: i32): Date {
+  const date = new Date(Date.UTC(year, 0, 1))
+  const day = date.getUTCDay()
+  let diff = (week - 1) * 7
+
+  // if 1 jan is friday to sunday, go to next week
+  if (!day || day > 4) {
+    diff += 7
+  }
+
+  date.setUTCDate(date.getUTCDate() - date.getUTCDay() + diff + 1)
+  return date
+}
+
+/**
+ * Format a date as YYYY-MM-DD
+ *
+ * @param date
+ */
+export function formatDate(date: Date): string {
+  const paddedMonth = (date.getUTCMonth() + 1).toString().padStart(2, '0')
+  const paddedDay = date
+    .getUTCDate()
+    .toString()
+    .padStart(2, '0')
+
+  return `${date.getUTCFullYear()}-${paddedMonth}-${paddedDay}`
+}
+
 export function addDailyUniqueAddressInteraction(event: ethereum.Event, address: Bytes | null): void {
   const dailyUniqueAddressInteractionsData = updateDailyUniqueInteractions(event)
 
@@ -344,5 +393,21 @@ export function addDailyUniqueAddressInteraction(event: ethereum.Event, address:
     ])
 
     dailyUniqueAddressInteractionsData.save()
+  }
+}
+
+export function addWeeklyUniqueAddressInteraction(event: ethereum.Event, address: Bytes | null): void {
+  const weeklyUniqueAddressInteractionsData = updateWeeklyUniqueInteractions(event)
+
+  if (!address) {
+    return
+  }
+
+  if (!weeklyUniqueAddressInteractionsData.addresses.includes(address)) {
+    weeklyUniqueAddressInteractionsData.addresses = weeklyUniqueAddressInteractionsData.addresses.concat([
+      address as Bytes
+    ])
+
+    weeklyUniqueAddressInteractionsData.save()
   }
 }
