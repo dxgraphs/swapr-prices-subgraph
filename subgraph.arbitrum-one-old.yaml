@@ -70,6 +70,8 @@ templates:
           file: ./abis/pair.json
         - name: Factory
           file: ./abis/factory.json
+      blockHandlers:
+        - handler: handleBlockPairTokenPrice
       eventHandlers:
         - event: Mint(indexed address,uint256,uint256)
           handler: handleMint

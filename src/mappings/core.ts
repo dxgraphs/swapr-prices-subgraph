@@ -1,5 +1,13 @@
-import { BigInt, BigDecimal, store, Address, log, Bytes } from '@graphprotocol/graph-ts'
-import { Pair, Token, Transaction, Mint as MintEvent, Burn as BurnEvent, Swap as SwapEvent } from '../types/schema'
+import { BigInt, BigDecimal, store, Address, log, Bytes, ethereum, dataSource } from '@graphprotocol/graph-ts'
+import {
+  Pair,
+  Token,
+  Transaction,
+  Mint as MintEvent,
+  Burn as BurnEvent,
+  Swap as SwapEvent,
+  BlockPairTokenPrice
+} from '../types/schema'
 import { Mint, Burn, Swap, Transfer, Sync } from '../types/templates/Pair/Pair'
 import { updatePairDayData, updateTokenDayData, updateSwaprDayData, updatePairHourData } from './dayUpdates'
 import {
@@ -585,4 +593,25 @@ export function handleSwap(event: Swap): void {
 
   // update unique day swaps
   addDailyUniqueAddressInteraction(event, swap.from)
+}
+
+export function handleBlockPairTokenPrice(block: ethereum.Block): void {
+  let pairContractAddress = dataSource.address()
+  let pair = Pair.load(pairContractAddress.toHexString())
+
+  if (!pair) {
+    return
+  }
+
+  let blockPairTokenPrice = new BlockPairTokenPrice(block.hash.toHexString())
+
+  blockPairTokenPrice.blockNumber = block.number
+  blockPairTokenPrice.blockTimestamp = block.timestamp
+  blockPairTokenPrice.pair = pair.id
+  blockPairTokenPrice.token0Price = pair.token0Price || ZERO_BD
+  blockPairTokenPrice.token1Price = pair.token1Price || ZERO_BD
+  blockPairTokenPrice.token0Address = Address.fromString(pair.token0 || ADDRESS_ZERO)
+  blockPairTokenPrice.token1Address = Address.fromString(pair.token1 || ADDRESS_ZERO)
+
+  blockPairTokenPrice.save()
 }

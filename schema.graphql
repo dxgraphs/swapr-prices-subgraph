@@ -475,3 +475,14 @@ type SingleSidedStakingCampaignPosition @entity {
   stakedAmount: BigDecimal!
   singleSidedStakingCampaign: SingleSidedStakingCampaign!
 }
+
+type BlockPairTokenPrice @entity {
+  id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  pair: Pair!
+  token0Price: BigDecimal!
+  token0Address: Bytes!
+  token1Price: BigDecimal!
+  token1Address: Bytes!
+}
