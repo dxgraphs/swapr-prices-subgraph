@@ -252,7 +252,7 @@ type DailyUniqueAddressInteraction @entity {
 
 # Weekly unique users interactions
 type WeeklyUniqueAddressInteraction @entity {
-  id: ID! # timestamp formatted as YYYY-MM-DD date string
+  id: ID! # timestamp formatted as YYYY-WeekNumber date string
   weekStart: String!
   weekEnd: String!
 

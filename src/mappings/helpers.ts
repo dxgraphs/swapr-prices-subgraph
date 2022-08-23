@@ -19,8 +19,11 @@ import {
 import { Factory as FactoryContract } from '../types/templates/Pair/Factory'
 import { getFactoryAddress, getStakingRewardsFactoryAddress } from '../commons/addresses'
 import { getBundle } from './factory'
-import { updateDailyUniqueInteractions, updateMonthlyUniqueInteractions } from './uniqueInteractions'
-import { updateWeeklyUniqueInteractions } from './uniqueInteractions'
+import {
+  updateDailyUniqueInteractions,
+  updateWeeklyUniqueInteractions,
+  updateMonthlyUniqueInteractions
+} from './uniqueInteractions'
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
 
@@ -337,7 +340,7 @@ export function getSwaprStakingRewardsFactory(): SwaprStakingRewardsFactory {
  *
  * @param date
  */
-export function getWeekFromDate(date: Date): i32 {
+export function getWeekNumberFromDate(date: Date): i32 {
   const startDate = Date.UTC(date.getUTCFullYear(), 0, 1)
   const days = Math.floor(((date.getTime() - startDate) / 86400000) as f32)
   const weekNumber = Math.ceil((days / 7) as f32)
