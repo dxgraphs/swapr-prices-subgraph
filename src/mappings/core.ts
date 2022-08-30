@@ -6,7 +6,10 @@ import {
   Mint as MintEvent,
   Burn as BurnEvent,
   Swap as SwapEvent,
-  BlockPairTokenPrice
+  FiveMinutesPairTokenPrice,
+  FifteenMinutesPairTokenPrice,
+  OneHourPairTokenPrice,
+  TwelveHoursPairTokenPrice
 } from '../types/schema'
 import { Mint, Burn, Swap, Transfer, Sync } from '../types/templates/Pair/Pair'
 import { updatePairDayData, updateTokenDayData, updateSwaprDayData, updatePairHourData } from './dayUpdates'
@@ -25,7 +28,8 @@ import {
   ZERO_BD,
   BI_18,
   createLiquiditySnapshot,
-  addDailyUniqueAddressInteraction
+  addDailyUniqueAddressInteraction,
+  createPairTokenPrice
 } from './helpers'
 import { getBundle, getSwaprFactory } from './factory'
 
@@ -595,7 +599,7 @@ export function handleSwap(event: Swap): void {
   addDailyUniqueAddressInteraction(event, swap.from)
 }
 
-export function handleBlockPairTokenPrice(block: ethereum.Block): void {
+export function handlePairTokenPrice(block: ethereum.Block): void {
   let pairContractAddress = dataSource.address()
   let pair = Pair.load(pairContractAddress.toHexString())
 
@@ -603,15 +607,47 @@ export function handleBlockPairTokenPrice(block: ethereum.Block): void {
     return
   }
 
-  let blockPairTokenPrice = new BlockPairTokenPrice(block.hash.toHexString())
+  const fiveMinutes = BigInt.fromI32(5 * 60)
+  const fifteenMinutes = BigInt.fromI32(15 * 60)
+  const oneHour = BigInt.fromI32(60 * 60)
+  const twelveHours = BigInt.fromI32(12 * 60 * 60)
 
-  blockPairTokenPrice.blockNumber = block.number
-  blockPairTokenPrice.blockTimestamp = block.timestamp
-  blockPairTokenPrice.pair = pair.id
-  blockPairTokenPrice.token0Price = pair.token0Price || ZERO_BD
-  blockPairTokenPrice.token1Price = pair.token1Price || ZERO_BD
-  blockPairTokenPrice.token0Address = Address.fromString(pair.token0 || ADDRESS_ZERO)
-  blockPairTokenPrice.token1Address = Address.fromString(pair.token1 || ADDRESS_ZERO)
+  if (block.timestamp.mod(fiveMinutes).isZero()) {
+    let pairTokenPrice = new FiveMinutesPairTokenPrice(
+      block.number.toString() + '-' + pairContractAddress.toHexString() + '-5m'
+    )
 
-  blockPairTokenPrice.save()
+    createPairTokenPrice(pairTokenPrice, block, pair)
+
+    pairTokenPrice.save()
+  }
+
+  if (block.timestamp.mod(fifteenMinutes).isZero()) {
+    let pairTokenPrice = new FifteenMinutesPairTokenPrice(
+      block.number.toString() + '-' + pairContractAddress.toHexString() + '-15m'
+    )
+
+    createPairTokenPrice(pairTokenPrice, block, pair)
+    pairTokenPrice.save()
+  }
+
+  if (block.timestamp.mod(oneHour).isZero()) {
+    let pairTokenPrice = new OneHourPairTokenPrice(
+      block.number.toString() + '-' + pairContractAddress.toHexString() + '-1h'
+    )
+
+    createPairTokenPrice(pairTokenPrice, block, pair)
+
+    pairTokenPrice.save()
+  }
+
+  if (block.timestamp.mod(twelveHours).isZero()) {
+    let pairTokenPrice = new TwelveHoursPairTokenPrice(
+      block.number.toString() + '-' + pairContractAddress.toHexString() + '-12h'
+    )
+
+    createPairTokenPrice(pairTokenPrice, block, pair)
+
+    pairTokenPrice.save()
+  }
 }

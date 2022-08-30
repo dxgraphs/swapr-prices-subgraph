@@ -246,7 +246,6 @@ type Bundle @entity {
 # Daily unique users interactions
 type DailyUniqueAddressInteraction @entity {
   id: ID! # timestamp formatted as YYYY-MM-DD date string
-
   addresses: [Bytes!]!
 }
 
@@ -476,7 +475,51 @@ type SingleSidedStakingCampaignPosition @entity {
   singleSidedStakingCampaign: SingleSidedStakingCampaign!
 }
 
-type BlockPairTokenPrice @entity {
+interface PairTokenPrice {
+  id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  pair: Pair!
+  token0Price: BigDecimal!
+  token0Address: Bytes!
+  token1Price: BigDecimal!
+  token1Address: Bytes!
+}
+
+type FiveMinutesPairTokenPrice implements PairTokenPrice @entity {
+  id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  pair: Pair!
+  token0Price: BigDecimal!
+  token0Address: Bytes!
+  token1Price: BigDecimal!
+  token1Address: Bytes!
+}
+
+type FifteenMinutesPairTokenPrice implements PairTokenPrice @entity {
+  id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  pair: Pair!
+  token0Price: BigDecimal!
+  token0Address: Bytes!
+  token1Price: BigDecimal!
+  token1Address: Bytes!
+}
+
+type OneHourPairTokenPrice implements PairTokenPrice @entity {
+  id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  pair: Pair!
+  token0Price: BigDecimal!
+  token0Address: Bytes!
+  token1Price: BigDecimal!
+  token1Address: Bytes!
+}
+
+type TwelveHoursPairTokenPrice implements PairTokenPrice @entity {
   id: ID!
   blockNumber: BigInt!
   blockTimestamp: BigInt!

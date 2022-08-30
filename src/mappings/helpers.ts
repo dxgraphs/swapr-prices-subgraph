@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { log, BigInt, BigDecimal, Address, ethereum, dataSource, Bytes } from '@graphprotocol/graph-ts'
+import { log, BigInt, BigDecimal, Address, ethereum, dataSource, Bytes, Entity, Value } from '@graphprotocol/graph-ts'
 import { ERC20 } from '../types/Factory/ERC20'
 import { ERC20SymbolBytes } from '../types/Factory/ERC20SymbolBytes'
 import { ERC20NameBytes } from '../types/Factory/ERC20NameBytes'
@@ -345,4 +345,14 @@ export function addDailyUniqueAddressInteraction(event: ethereum.Event, address:
 
     dailyUniqueAddressInteractionsData.save()
   }
+}
+
+export function createPairTokenPrice(pairTokenPrice: Entity, block: ethereum.Block, pair: Pair): void {
+  pairTokenPrice.set('blockNumber', Value.fromBigInt(block.number))
+  pairTokenPrice.set('blockTimestamp', Value.fromBigInt(block.timestamp))
+  pairTokenPrice.set('pair', Value.fromString(pair.id))
+  pairTokenPrice.set('token0Price', Value.fromBigDecimal(pair.token0Price || ZERO_BD))
+  pairTokenPrice.set('token1Price', Value.fromBigDecimal(pair.token1Price || ZERO_BD))
+  pairTokenPrice.set('token0Address', Value.fromAddress(Address.fromString(pair.token0 || ADDRESS_ZERO)))
+  pairTokenPrice.set('token1Address', Value.fromAddress(Address.fromString(pair.token1 || ADDRESS_ZERO)))
 }
