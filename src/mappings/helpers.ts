@@ -14,7 +14,8 @@ import {
   LiquidityMiningPositionSnapshot,
   SingleSidedStakingCampaign,
   SingleSidedStakingCampaignPosition,
-  SwaprStakingRewardsFactory
+  SwaprStakingRewardsFactory,
+  PairTokenPrice
 } from '../types/schema'
 import { Factory as FactoryContract } from '../types/templates/Pair/Factory'
 import { getFactoryAddress, getStakingRewardsFactoryAddress } from '../commons/addresses'
@@ -347,12 +348,24 @@ export function addDailyUniqueAddressInteraction(event: ethereum.Event, address:
   }
 }
 
-export function createPairTokenPrice(pairTokenPrice: Entity, block: ethereum.Block, pair: Pair): void {
-  pairTokenPrice.set('blockNumber', Value.fromBigInt(block.number))
-  pairTokenPrice.set('blockTimestamp', Value.fromBigInt(block.timestamp))
-  pairTokenPrice.set('pair', Value.fromString(pair.id))
-  pairTokenPrice.set('token0Price', Value.fromBigDecimal(pair.token0Price || ZERO_BD))
-  pairTokenPrice.set('token1Price', Value.fromBigDecimal(pair.token1Price || ZERO_BD))
-  pairTokenPrice.set('token0Address', Value.fromAddress(Address.fromString(pair.token0 || ADDRESS_ZERO)))
-  pairTokenPrice.set('token1Address', Value.fromAddress(Address.fromString(pair.token1 || ADDRESS_ZERO)))
+export abstract class PairTokenPriceTimeframe {
+  static FIVE_MINUTES: string = 'FIVE_MINUTES'
+  static FIFTEEN_MINUTES: string = 'FIFTEEN_MINUTES'
+  static ONE_HOUR: string = 'ONE_HOUR'
+  static TWELVE_HOURS: string = 'TWELVE_HOURS'
+}
+
+export function createPairTokenPrice(block: ethereum.Block, pair: Pair, timeframe: string): void {
+  let pairTokenPrice = new PairTokenPrice(block.number.toString() + '-' + pair.id + '-' + timeframe)
+
+  pairTokenPrice.blockNumber = block.number
+  pairTokenPrice.blockTimestamp = block.timestamp
+  pairTokenPrice.pair = pair.id
+  pairTokenPrice.token0Price = pair.token0Price || ZERO_BD
+  pairTokenPrice.token1Price = pair.token1Price || ZERO_BD
+  pairTokenPrice.token0Address = Address.fromString(pair.token0 || ADDRESS_ZERO)
+  pairTokenPrice.token1Address = Address.fromString(pair.token1 || ADDRESS_ZERO)
+  pairTokenPrice.timeframe = timeframe
+
+  pairTokenPrice.save()
 }

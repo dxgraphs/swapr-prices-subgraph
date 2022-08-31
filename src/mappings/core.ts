@@ -6,10 +6,7 @@ import {
   Mint as MintEvent,
   Burn as BurnEvent,
   Swap as SwapEvent,
-  FiveMinutesPairTokenPrice,
-  FifteenMinutesPairTokenPrice,
-  OneHourPairTokenPrice,
-  TwelveHoursPairTokenPrice
+  PairTokenPrice
 } from '../types/schema'
 import { Mint, Burn, Swap, Transfer, Sync } from '../types/templates/Pair/Pair'
 import { updatePairDayData, updateTokenDayData, updateSwaprDayData, updatePairHourData } from './dayUpdates'
@@ -29,7 +26,8 @@ import {
   BI_18,
   createLiquiditySnapshot,
   addDailyUniqueAddressInteraction,
-  createPairTokenPrice
+  createPairTokenPrice,
+  PairTokenPriceTimeframe
 } from './helpers'
 import { getBundle, getSwaprFactory } from './factory'
 
@@ -613,41 +611,18 @@ export function handlePairTokenPrice(block: ethereum.Block): void {
   const twelveHours = BigInt.fromI32(12 * 60 * 60)
 
   if (block.timestamp.mod(fiveMinutes).isZero()) {
-    let pairTokenPrice = new FiveMinutesPairTokenPrice(
-      block.number.toString() + '-' + pairContractAddress.toHexString() + '-5m'
-    )
-
-    createPairTokenPrice(pairTokenPrice, block, pair)
-
-    pairTokenPrice.save()
+    createPairTokenPrice(block, pair, PairTokenPriceTimeframe.FIVE_MINUTES)
   }
 
   if (block.timestamp.mod(fifteenMinutes).isZero()) {
-    let pairTokenPrice = new FifteenMinutesPairTokenPrice(
-      block.number.toString() + '-' + pairContractAddress.toHexString() + '-15m'
-    )
-
-    createPairTokenPrice(pairTokenPrice, block, pair)
-    pairTokenPrice.save()
+    createPairTokenPrice(block, pair, PairTokenPriceTimeframe.FIFTEEN_MINUTES)
   }
 
   if (block.timestamp.mod(oneHour).isZero()) {
-    let pairTokenPrice = new OneHourPairTokenPrice(
-      block.number.toString() + '-' + pairContractAddress.toHexString() + '-1h'
-    )
-
-    createPairTokenPrice(pairTokenPrice, block, pair)
-
-    pairTokenPrice.save()
+    createPairTokenPrice(block, pair, PairTokenPriceTimeframe.ONE_HOUR)
   }
 
   if (block.timestamp.mod(twelveHours).isZero()) {
-    let pairTokenPrice = new TwelveHoursPairTokenPrice(
-      block.number.toString() + '-' + pairContractAddress.toHexString() + '-12h'
-    )
-
-    createPairTokenPrice(pairTokenPrice, block, pair)
-
-    pairTokenPrice.save()
+    createPairTokenPrice(block, pair, PairTokenPriceTimeframe.TWELVE_HOURS)
   }
 }
