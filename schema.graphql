@@ -246,6 +246,22 @@ type Bundle @entity {
 # Daily unique users interactions
 type DailyUniqueAddressInteraction @entity {
   id: ID! # timestamp formatted as YYYY-MM-DD date string
+  timestamp: Int! # timestamp
+  addresses: [Bytes!]!
+}
+
+# Weekly unique users interactions
+type WeeklyUniqueAddressInteraction @entity {
+  id: ID! # timestamp formatted as YYYY-WeekNumber date string
+  timestampStart: Int! # timestamp at the first day of the week
+  timestampEnd: Int! # timestamp at the last day of the week
+  addresses: [Bytes!]!
+}
+
+# Monthly unique users interactions
+type MonthlyUniqueAddressInteraction @entity {
+  id: ID! # timestamp formatted as YYYY-MM date string
+  timestamp: Int! # timestamp at the first day of the month
   addresses: [Bytes!]!
 }
 

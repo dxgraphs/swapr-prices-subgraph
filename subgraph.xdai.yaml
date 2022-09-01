@@ -1,6 +1,8 @@
 specVersion: 0.0.4
 description: Swapr is a decentralized protocol for automated token exchange on Ethereum.
-repository: https://github.com/nicoelzer/swapr-subgraph
+repository: https://github.com/dxgraphs/swapr-subgraph
+features:
+  - nonFatalErrors
 schema:
   file: ./schema.graphql
 dataSources:
@@ -87,14 +89,14 @@ templates:
       blockHandlers:
         - handler: handlePairTokenPrice
       eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
         - event: Mint(indexed address,uint256,uint256)
           handler: handleMint
         - event: Burn(indexed address,uint256,uint256,indexed address)
           handler: handleBurn
         - event: Swap(indexed address,uint256,uint256,uint256,uint256,indexed address)
           handler: handleSwap
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
         - event: Sync(uint112,uint112)
           handler: handleSync
   - kind: ethereum/contract

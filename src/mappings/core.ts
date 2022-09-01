@@ -26,6 +26,8 @@ import {
   BI_18,
   createLiquiditySnapshot,
   addDailyUniqueAddressInteraction,
+  addWeeklyUniqueAddressInteraction,
+  addMonthlyUniqueAddressInteraction,
   createPairTokenPrice,
   PairTokenPriceTimeframe
 } from './helpers'
@@ -365,7 +367,14 @@ export function handleMint(event: Mint): void {
   updateTokenDayData(token0 as Token, event)
   updateTokenDayData(token1 as Token, event)
 
+  // update unique daily mints
   addDailyUniqueAddressInteraction(event, mint.to)
+
+  // update unique weekly mints
+  addWeeklyUniqueAddressInteraction(event, mint.to)
+
+  // update unique monthly mints
+  addMonthlyUniqueAddressInteraction(event, mint.to)
 }
 
 export function handleBurn(event: Burn): void {
@@ -433,7 +442,14 @@ export function handleBurn(event: Burn): void {
   updateTokenDayData(token0 as Token, event)
   updateTokenDayData(token1 as Token, event)
 
+  // update unique daily burns
   addDailyUniqueAddressInteraction(event, burn.to)
+
+  // update unique weekly burns
+  addWeeklyUniqueAddressInteraction(event, burn.to)
+
+  // update unique monthly burns
+  addMonthlyUniqueAddressInteraction(event, burn.to)
 }
 
 export function handleSwap(event: Swap): void {
@@ -595,6 +611,12 @@ export function handleSwap(event: Swap): void {
 
   // update unique day swaps
   addDailyUniqueAddressInteraction(event, swap.from)
+
+  // update unique weekly swaps
+  addWeeklyUniqueAddressInteraction(event, swap.from)
+
+  // update unique monthly swaps
+  addMonthlyUniqueAddressInteraction(event, swap.to)
 }
 
 export function handlePairTokenPrice(block: ethereum.Block): void {
