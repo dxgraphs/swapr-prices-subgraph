@@ -247,7 +247,6 @@ type Bundle @entity {
 type DailyUniqueAddressInteraction @entity {
   id: ID! # timestamp formatted as YYYY-MM-DD date string
   timestamp: Int! # timestamp
-
   addresses: [Bytes!]!
 }
 
@@ -256,7 +255,6 @@ type WeeklyUniqueAddressInteraction @entity {
   id: ID! # timestamp formatted as YYYY-WeekNumber date string
   timestampStart: Int! # timestamp at the first day of the week
   timestampEnd: Int! # timestamp at the last day of the week
-
   addresses: [Bytes!]!
 }
 
@@ -264,7 +262,6 @@ type WeeklyUniqueAddressInteraction @entity {
 type MonthlyUniqueAddressInteraction @entity {
   id: ID! # timestamp formatted as YYYY-MM date string
   timestamp: Int! # timestamp at the first day of the month
-
   addresses: [Bytes!]!
 }
 
@@ -492,4 +489,23 @@ type SingleSidedStakingCampaignPosition @entity {
   user: User!
   stakedAmount: BigDecimal!
   singleSidedStakingCampaign: SingleSidedStakingCampaign!
+}
+
+enum PairTokenPriceTimeframe {
+  FIVE_MINUTES
+  FIFTEEN_MINUTES
+  ONE_HOUR
+  TWELVE_HOURS
+}
+
+type PairTokenPrice @entity {
+  id: ID!
+  timeframe: PairTokenPriceTimeframe!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  pair: Pair!
+  token0Price: BigDecimal!
+  token0Address: Bytes!
+  token1Price: BigDecimal!
+  token1Address: Bytes!
 }

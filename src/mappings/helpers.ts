@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { log, BigInt, BigDecimal, Address, ethereum, dataSource, Bytes } from '@graphprotocol/graph-ts'
+import { log, BigInt, BigDecimal, Address, ethereum, dataSource, Bytes, Entity, Value } from '@graphprotocol/graph-ts'
 import { ERC20 } from '../types/Factory/ERC20'
 import { ERC20SymbolBytes } from '../types/Factory/ERC20SymbolBytes'
 import { ERC20NameBytes } from '../types/Factory/ERC20NameBytes'
@@ -14,7 +14,8 @@ import {
   LiquidityMiningPositionSnapshot,
   SingleSidedStakingCampaign,
   SingleSidedStakingCampaignPosition,
-  SwaprStakingRewardsFactory
+  SwaprStakingRewardsFactory,
+  PairTokenPrice
 } from '../types/schema'
 import { Factory as FactoryContract } from '../types/templates/Pair/Factory'
 import { getFactoryAddress, getStakingRewardsFactoryAddress } from '../commons/addresses'
@@ -429,4 +430,26 @@ export function addMonthlyUniqueAddressInteraction(event: ethereum.Event, addres
 
     monthlyUniqueAddressInteractionsData.save()
   }
+}
+
+export abstract class PairTokenPriceTimeframe {
+  static FIVE_MINUTES: string = 'FIVE_MINUTES'
+  static FIFTEEN_MINUTES: string = 'FIFTEEN_MINUTES'
+  static ONE_HOUR: string = 'ONE_HOUR'
+  static TWELVE_HOURS: string = 'TWELVE_HOURS'
+}
+
+export function createPairTokenPrice(block: ethereum.Block, pair: Pair, timeframe: string): void {
+  let pairTokenPrice = new PairTokenPrice(block.number.toString() + '-' + pair.id + '-' + timeframe)
+
+  pairTokenPrice.blockNumber = block.number
+  pairTokenPrice.blockTimestamp = block.timestamp
+  pairTokenPrice.pair = pair.id
+  pairTokenPrice.token0Price = pair.token0Price || ZERO_BD
+  pairTokenPrice.token1Price = pair.token1Price || ZERO_BD
+  pairTokenPrice.token0Address = Address.fromString(pair.token0 || ADDRESS_ZERO)
+  pairTokenPrice.token1Address = Address.fromString(pair.token1 || ADDRESS_ZERO)
+  pairTokenPrice.timeframe = timeframe
+
+  pairTokenPrice.save()
 }
