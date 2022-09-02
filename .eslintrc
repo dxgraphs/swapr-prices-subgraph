@@ -4,6 +4,7 @@
   "extends": ["plugin:@typescript-eslint/recommended", "prettier", "prettier/@typescript-eslint"],
   "rules": {
     "@typescript-eslint/ban-ts-ignore": "off",
-    "prefer-const": "off"
+    "prefer-const": "off",
+    "@typescript-eslint/no-inferrable-types": "off"
   }
 }

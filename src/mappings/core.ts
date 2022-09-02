@@ -1,5 +1,13 @@
-import { BigInt, BigDecimal, store, Address, log, Bytes } from '@graphprotocol/graph-ts'
-import { Pair, Token, Transaction, Mint as MintEvent, Burn as BurnEvent, Swap as SwapEvent } from '../types/schema'
+import { BigInt, BigDecimal, store, Address, log, Bytes, ethereum, dataSource } from '@graphprotocol/graph-ts'
+import {
+  Pair,
+  Token,
+  Transaction,
+  Mint as MintEvent,
+  Burn as BurnEvent,
+  Swap as SwapEvent,
+  PairTokenPrice
+} from '../types/schema'
 import { Mint, Burn, Swap, Transfer, Sync } from '../types/templates/Pair/Pair'
 import { updatePairDayData, updateTokenDayData, updateSwaprDayData, updatePairHourData } from './dayUpdates'
 import {
@@ -19,7 +27,9 @@ import {
   createLiquiditySnapshot,
   addDailyUniqueAddressInteraction,
   addWeeklyUniqueAddressInteraction,
-  addMonthlyUniqueAddressInteraction
+  addMonthlyUniqueAddressInteraction,
+  createPairTokenPrice,
+  PairTokenPriceTimeframe
 } from './helpers'
 import { getBundle, getSwaprFactory } from './factory'
 
@@ -607,4 +617,34 @@ export function handleSwap(event: Swap): void {
 
   // update unique monthly swaps
   addMonthlyUniqueAddressInteraction(event, swap.to)
+}
+
+export function handlePairTokenPrice(block: ethereum.Block): void {
+  let pairContractAddress = dataSource.address()
+  let pair = Pair.load(pairContractAddress.toHexString())
+
+  if (!pair) {
+    return
+  }
+
+  const fiveMinutes = BigInt.fromI32(5 * 60)
+  const fifteenMinutes = BigInt.fromI32(15 * 60)
+  const oneHour = BigInt.fromI32(60 * 60)
+  const twelveHours = BigInt.fromI32(12 * 60 * 60)
+
+  if (block.timestamp.mod(fiveMinutes).isZero()) {
+    createPairTokenPrice(block, pair, PairTokenPriceTimeframe.FIVE_MINUTES)
+  }
+
+  if (block.timestamp.mod(fifteenMinutes).isZero()) {
+    createPairTokenPrice(block, pair, PairTokenPriceTimeframe.FIFTEEN_MINUTES)
+  }
+
+  if (block.timestamp.mod(oneHour).isZero()) {
+    createPairTokenPrice(block, pair, PairTokenPriceTimeframe.ONE_HOUR)
+  }
+
+  if (block.timestamp.mod(twelveHours).isZero()) {
+    createPairTokenPrice(block, pair, PairTokenPriceTimeframe.TWELVE_HOURS)
+  }
 }

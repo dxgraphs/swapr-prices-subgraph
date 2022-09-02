@@ -1,6 +1,6 @@
 specVersion: 0.0.4
 description: Swapr is a decentralized protocol for automated token exchange on Ethereum.
-repository: https://github.com/nicoelzer/swapr-subgraph
+repository: https://github.com/dxgraphs/swapr-subgraph
 features:
   - nonFatalErrors
 schema:
@@ -86,6 +86,8 @@ templates:
           file: ./abis/ERC20SymbolBytes.json
         - name: ERC20NameBytes
           file: ./abis/ERC20NameBytes.json
+      blockHandlers:
+        - handler: handlePairTokenPrice
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
