@@ -1,6 +1,6 @@
 {
   "name": "swapr-subgraph",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "repository": "https://github.com/dxgraphs/swapr-subgraph",
   "license": "GPL-3.0-or-later",
   "scripts": {
