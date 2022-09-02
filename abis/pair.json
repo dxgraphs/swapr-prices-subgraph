@@ -543,6 +543,21 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "uint32",
+        "name": "_swapFee",
+        "type": "uint32"
+      }
+    ],
+    "name": "setSwapFee",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
         "internalType": "address",
         "name": "to",
         "type": "address"
@@ -582,6 +597,21 @@
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "swapFee",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {

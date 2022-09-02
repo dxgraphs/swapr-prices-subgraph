@@ -60,6 +60,9 @@ type Pair @entity {
   # pair address
   id: ID!
 
+  # swap fee
+  swapFee: BigInt!
+
   # mirrored from the smart contract
   token0: Token!
   token1: Token!
