@@ -1,15 +1,16 @@
 /* eslint-disable prefer-const */
-import { log } from '@graphprotocol/graph-ts'
+import { BigInt, log } from '@graphprotocol/graph-ts'
 import { SwaprFactory, Pair, Token, Bundle } from '../types/schema'
 import { PairCreated } from '../types/Factory/Factory'
 import { Pair as PairTemplate } from '../types/templates'
+import { Pair as PairContract } from '../types/templates/Pair/Pair'
 import {
   ZERO_BD,
   ZERO_BI,
   fetchTokenSymbol,
   fetchTokenName,
   fetchTokenDecimals,
-  fetchTokenTotalSupply
+  fetchTokenTotalSupply,
 } from './helpers'
 import { getFactoryAddress, getLiquidityTrackingTokenAddresses } from '../commons/addresses'
 
@@ -117,6 +118,10 @@ export function handleNewPair(event: PairCreated): void {
     token1.txCount = ZERO_BI
     token1.whitelistPairs = []
   }
+  // create the tracked contract based on the template
+  PairTemplate.create(event.params.pair)
+
+  let pairContract = PairContract.bind(event.params.pair)
 
   let pair = new Pair(event.params.pair.toHexString()) as Pair
   pair.token0 = token0.id
@@ -137,9 +142,7 @@ export function handleNewPair(event: PairCreated): void {
   pair.untrackedVolumeUSD = ZERO_BD
   pair.token0Price = ZERO_BD
   pair.token1Price = ZERO_BD
-
-  // create the tracked contract based on the template
-  PairTemplate.create(event.params.pair)
+  pair.swapFee = pairContract.try_swapFee().value || new BigInt(0)
 
   // save liquidity tracking pairs
   let whitelist = getLiquidityTrackingTokenAddresses()

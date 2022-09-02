@@ -28,6 +28,8 @@ dataSources:
           file: ./abis/ERC20SymbolBytes.json
         - name: ERC20NameBytes
           file: ./abis/ERC20NameBytes.json
+        - name: Pair
+          file: ./abis/pair.json
       eventHandlers:
         - event: PairCreated(indexed address,indexed address,address,uint256)
           handler: handleNewPair
@@ -59,6 +61,9 @@ dataSources:
       eventHandlers:
         - event: DistributionCreated(address,address)
           handler: handleDistributionCreation
+      callHandlers:
+        - function: setSwapFee(uint32)
+          handler: handleSetSwapFee
 templates:
   - kind: ethereum/contract
     name: Pair

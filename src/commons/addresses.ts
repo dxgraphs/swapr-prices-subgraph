@@ -12,6 +12,7 @@ export function getFactoryAddress(): string {
   if (network == 'xdai') return '0x5d48c95adffd4b40c1aaadc4e08fc44117e02179'
   if (network == 'arbitrum-one') return '0x359f20ad0f42d75a5077e65f30274cabe6f4f01a'
   if (network == 'arbitrum-rinkeby') return '0x5c702fbbcfb8ef5cc70c4e4341aa437ef9d55281'
+  if (network == 'goerli') return '0xa3Dd335F8107527796642D044a5bD0A94De4E0E4'
   log.warning('no factory address for unsupported network {}', [network])
   return ADDRESS_ZERO
 }
