@@ -80,6 +80,8 @@ templates:
           file: ./abis/pair.json
         - name: Factory
           file: ./abis/factory.json
+      blockHandlers:
+        - handler: handlePairTokenPrice
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
