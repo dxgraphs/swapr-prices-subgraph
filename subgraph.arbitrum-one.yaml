@@ -61,9 +61,6 @@ dataSources:
       eventHandlers:
         - event: DistributionCreated(address,address)
           handler: handleDistributionCreation
-      callHandlers:
-        - function: setSwapFee(uint32)
-          handler: handleSetSwapFee
 templates:
   - kind: ethereum/contract
     name: Pair
@@ -96,6 +93,9 @@ templates:
           handler: handleSwap
         - event: Sync(uint112,uint112)
           handler: handleSync
+      callHandlers:
+        - function: setSwapFee(uint32)
+          handler: handleSetSwapFee
   - kind: ethereum/contract
     name: Distribution
     network: arbitrum-one
