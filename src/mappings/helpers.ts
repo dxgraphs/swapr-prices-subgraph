@@ -433,14 +433,15 @@ export function addMonthlyUniqueAddressInteraction(event: ethereum.Event, addres
 }
 
 export abstract class PairTokenPriceTimeframe {
+  static ONE_MINUTE: string = 'ONE_MINUTE'
   static FIVE_MINUTES: string = 'FIVE_MINUTES'
   static FIFTEEN_MINUTES: string = 'FIFTEEN_MINUTES'
   static ONE_HOUR: string = 'ONE_HOUR'
   static TWELVE_HOURS: string = 'TWELVE_HOURS'
 }
 
-export function createPairTokenPrice(block: ethereum.Block, pair: Pair, timeframe: string): void {
-  let pairTokenPrice = new PairTokenPrice(block.number.toString() + '-' + pair.id + '-' + timeframe)
+export function createPairTokenPrice(id: string, block: ethereum.Block, pair: Pair, timeframe: string): void {
+  let pairTokenPrice = new PairTokenPrice(id + '-' + timeframe)
 
   pairTokenPrice.blockNumber = block.number
   pairTokenPrice.blockTimestamp = block.timestamp

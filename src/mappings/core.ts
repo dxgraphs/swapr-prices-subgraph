@@ -604,25 +604,38 @@ export function handlePairTokenPrice(block: ethereum.Block): void {
     return
   }
 
-  const fiveMinutes = BigInt.fromI32(5 * 60)
-  const fifteenMinutes = BigInt.fromI32(15 * 60)
-  const oneHour = BigInt.fromI32(60 * 60)
-  const twelveHours = BigInt.fromI32(12 * 60 * 60)
+  const blockTimestampDate = new Date(block.timestamp.toI64() * 1000)
+  const blockTimestampMinutes = blockTimestampDate.getUTCMinutes()
+  const blockTimestampHours = blockTimestampDate.getUTCHours()
 
-  if (block.timestamp.mod(fiveMinutes).isZero()) {
-    createPairTokenPrice(block, pair, PairTokenPriceTimeframe.FIVE_MINUTES)
+  const id = [
+    pair.id,
+    blockTimestampDate.getUTCFullYear().toString(),
+    blockTimestampDate.getUTCMonth().toString(),
+    blockTimestampHours.toString(),
+    blockTimestampMinutes.toString()
+  ].join('-')
+
+  const fiveMinutes = 5
+  const fifteenMinutes = 15
+  const twelveHours = 12
+
+  createPairTokenPrice(id, block, pair, PairTokenPriceTimeframe.ONE_MINUTE)
+
+  if (blockTimestampMinutes % fiveMinutes === 0) {
+    createPairTokenPrice(id, block, pair, PairTokenPriceTimeframe.FIVE_MINUTES)
   }
 
-  if (block.timestamp.mod(fifteenMinutes).isZero()) {
-    createPairTokenPrice(block, pair, PairTokenPriceTimeframe.FIFTEEN_MINUTES)
+  if (blockTimestampMinutes % fifteenMinutes === 0) {
+    createPairTokenPrice(id, block, pair, PairTokenPriceTimeframe.FIFTEEN_MINUTES)
   }
 
-  if (block.timestamp.mod(oneHour).isZero()) {
-    createPairTokenPrice(block, pair, PairTokenPriceTimeframe.ONE_HOUR)
+  if (blockTimestampMinutes === 0) {
+    createPairTokenPrice(id, block, pair, PairTokenPriceTimeframe.ONE_HOUR)
   }
 
-  if (block.timestamp.mod(twelveHours).isZero()) {
-    createPairTokenPrice(block, pair, PairTokenPriceTimeframe.TWELVE_HOURS)
+  if (blockTimestampHours % twelveHours === 0 && blockTimestampMinutes === 0) {
+    createPairTokenPrice(id, block, pair, PairTokenPriceTimeframe.TWELVE_HOURS)
   }
 }
 
