@@ -246,28 +246,6 @@ type Bundle @entity {
   nativeCurrencyPrice: BigDecimal! # price of native currency usd
 }
 
-# Daily unique users interactions
-type DailyUniqueAddressInteraction @entity {
-  id: ID! # timestamp formatted as YYYY-MM-DD date string
-  timestamp: Int! # timestamp
-  addresses: [Bytes!]!
-}
-
-# Weekly unique users interactions
-type WeeklyUniqueAddressInteraction @entity {
-  id: ID! # timestamp formatted as YYYY-WeekNumber date string
-  timestampStart: Int! # timestamp at the first day of the week
-  timestampEnd: Int! # timestamp at the last day of the week
-  addresses: [Bytes!]!
-}
-
-# Monthly unique users interactions
-type MonthlyUniqueAddressInteraction @entity {
-  id: ID! # timestamp formatted as YYYY-MM date string
-  timestamp: Int! # timestamp at the first day of the month
-  addresses: [Bytes!]!
-}
-
 # Data accumulated and condensed into day stats for all of Swapr
 type SwaprDayData @entity {
   id: ID! # timestamp rounded to current day by dividing by 86400
@@ -353,13 +331,6 @@ type TokenDayData @entity {
   priceUSD: BigDecimal!
 }
 
-# Staking rewards distribution factory
-type SwaprStakingRewardsFactory @entity {
-  # factory address
-  id: ID!
-  initializedCampaignsCount: Int!
-}
-
 # Liquidity mining campaign reward
 type LiquidityMiningCampaignReward @entity {
   id: ID!
@@ -422,76 +393,6 @@ type Recovery @entity {
   timestamp: BigInt!
   liquidityMiningCampaign: LiquidityMiningCampaign!
   amounts: [BigDecimal!]!
-}
-
-# Single Sided Staking campaign
-type SingleSidedStakingCampaign @entity {
-  # campaign address
-  id: ID!
-  initialized: Boolean!
-  owner: Bytes!
-  startsAt: BigInt!
-  endsAt: BigInt!
-  duration: BigInt!
-  locked: Boolean!
-  stakeToken: Token!
-  rewards: [SingleSidedStakingCampaignReward!]!
-  stakedAmount: BigDecimal!
-  stakingCap: BigDecimal!
-  singleSidedStakingPositions: [SingleSidedStakingCampaignPosition!]! @derivedFrom(field: "singleSidedStakingCampaign")
-  deposits: [SingleSidedStakingCampaignDeposit!]! @derivedFrom(field: "singleSidedStakingCampaign")
-  withdrawals: [SingleSidedStakingCampaignWithdrawal!]! @derivedFrom(field: "singleSidedStakingCampaign")
-  claims: [SingleSidedStakingCampaignClaim!]! @derivedFrom(field: "singleSidedStakingCampaign")
-  recoveries: [SingleSidedStakingCampaignRecovery!]! @derivedFrom(field: "singleSidedStakingCampaign")
-}
-
-# Staking campaign reward
-type SingleSidedStakingCampaignReward @entity {
-  id: ID!
-  token: Token!
-  amount: BigDecimal!
-}
-
-# LP tokens staking
-type SingleSidedStakingCampaignDeposit @entity {
-  id: ID!
-  user: Bytes!
-  timestamp: BigInt!
-  singleSidedStakingCampaign: SingleSidedStakingCampaign!
-  amount: BigDecimal!
-}
-
-# LP tokens withdrawing
-type SingleSidedStakingCampaignWithdrawal @entity {
-  id: ID!
-  user: Bytes!
-  timestamp: BigInt!
-  singleSidedStakingCampaign: SingleSidedStakingCampaign!
-  amount: BigDecimal!
-}
-
-# Reward tokens claiming
-type SingleSidedStakingCampaignClaim @entity {
-  id: ID!
-  user: Bytes!
-  timestamp: BigInt!
-  singleSidedStakingCampaign: SingleSidedStakingCampaign!
-  amounts: [BigDecimal!]!
-}
-
-# Reward tokens recovery from distribution owner
-type SingleSidedStakingCampaignRecovery @entity {
-  id: ID!
-  timestamp: BigInt!
-  singleSidedStakingCampaign: SingleSidedStakingCampaign!
-  amounts: [BigDecimal!]!
-}
-
-type SingleSidedStakingCampaignPosition @entity {
-  id: ID!
-  user: User!
-  stakedAmount: BigDecimal!
-  singleSidedStakingCampaign: SingleSidedStakingCampaign!
 }
 
 enum PairTokenPriceTimeframe {

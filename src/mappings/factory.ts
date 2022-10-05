@@ -10,7 +10,7 @@ import {
   fetchTokenSymbol,
   fetchTokenName,
   fetchTokenDecimals,
-  fetchTokenTotalSupply,
+  fetchTokenTotalSupply
 } from './helpers'
 import { getFactoryAddress, getLiquidityTrackingTokenAddresses } from '../commons/addresses'
 
@@ -41,26 +41,6 @@ export function getSwaprFactory(): SwaprFactory {
   factory.save()
 
   return factory
-}
-
-/**
- *
- * @param event
- * @returns
- */
-export function getBundle(): Bundle {
-  // create new bundle
-  let bundle = Bundle.load('1')
-
-  if (bundle === null) {
-    // create new bundle
-    bundle = new Bundle('1')
-    bundle.nativeCurrencyPrice = ZERO_BD
-  }
-
-  bundle.save()
-
-  return bundle
 }
 
 export function handleNewPair(event: PairCreated): void {
