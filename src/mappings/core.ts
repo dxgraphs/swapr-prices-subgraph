@@ -27,8 +27,6 @@ export function handlePairTokenPrice(block: ethereum.Block): void {
   const fifteenMinutes = 15
   const twelveHours = 12
 
-  createPairTokenPrice(id, block, pair, PairTokenPriceTimeframe.ONE_MINUTE)
-
   if (blockTimestampMinutes % fiveMinutes === 0) {
     createPairTokenPrice(id, block, pair, PairTokenPriceTimeframe.FIVE_MINUTES)
   }

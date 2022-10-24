@@ -396,7 +396,6 @@ type Recovery @entity {
 }
 
 enum PairTokenPriceTimeframe {
-  ONE_MINUTE
   FIVE_MINUTES
   FIFTEEN_MINUTES
   ONE_HOUR
