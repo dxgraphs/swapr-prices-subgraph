@@ -22,6 +22,7 @@ export function handlePairTokenPrice(block: ethereum.Block): void {
     pair.id,
     blockTimestampDate.getUTCFullYear().toString(),
     blockTimestampDate.getUTCMonth().toString(),
+    blockTimestampDate.getUTCDay().toString(),
     blockTimestampHours.toString(),
     blockTimestampMinutes.toString()
   ].join('-')
