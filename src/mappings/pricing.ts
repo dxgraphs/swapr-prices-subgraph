@@ -61,7 +61,6 @@ export function getNativeCurrencyPriceInUSD(): BigDecimal {
 
 /**
  * Search through graph to find derived native currency per token.
- * @todo update to be derived native currency (add stablecoin estimates)
  **/
 export function findNativeCurrencyPerToken(token: Token): BigDecimal {
   if (token.id == getNativeCurrencyWrapperAddress()) {

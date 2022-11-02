@@ -54,7 +54,7 @@ export function handleSync(event: Sync): void {
   let token1 = Token.load(pair.token1) as Token
   let swapr = getSwaprFactory()
 
-  // reset factory liquidity by subtracting onluy tarcked liquidity
+  // reset factory liquidity by subtracting only tarcked liquidity
   swapr.totalLiquidityNativeCurrency = swapr.totalLiquidityNativeCurrency.minus(
     pair.trackedReserveNativeCurrency as BigDecimal
   )
