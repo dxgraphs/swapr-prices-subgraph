@@ -52,5 +52,8 @@ templates:
           file: ./abis/pair.json
         - name: Factory
           file: ./abis/factory.json
+      eventHandlers:
+        - event: Sync(uint112,uint112)
+          handler: handleSync
       blockHandlers:
         - handler: handlePairTokenPrice
